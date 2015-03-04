@@ -28,6 +28,15 @@ class VideojsWidget extends \yii\base\Widget
      */
     public $tags = [];
 
+    /**
+     * Let you init multi resolutions plugin
+     * Usage:
+     *'source' => [
+     *    ['src' => 'http://video-js.zencoder.com/oceans-clip.mp4', 'type' => 'video/mp4', 'data-res' => '360'],
+     *    ['src' => 'http://video-js.zencoder.com/oceans-clip.mp4', 'type' => 'video/mp4', 'data-res' => '720'],
+     * ],
+     * @var bool
+     */
     public $multipleResolutions = false;
 
     /**
