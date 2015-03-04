@@ -28,6 +28,8 @@ class VideojsWidget extends \yii\base\Widget
      */
     public $tags = [];
 
+    public $multipleResolutions = false;
+
     /**
      * Initializes the widget
      * @throw InvalidConfigException
@@ -50,23 +52,22 @@ class VideojsWidget extends \yii\base\Widget
 
         if (!empty($this->tags) && is_array($this->tags)) {
 
-                foreach ($this->tags as $tagName => $tags) {
-                    if (is_array($this->tags[$tagName])) {
-
-                        foreach ($tags as $tagOptions) {
-                            $tagContent = '';
-                            if (isset($tagOptions['content'])) {
-                                $tagContent = $tagOptions['content'];
-                                unset($tagOptions['content']);
-                            }
-
-                            $data .= Html::tag($tagName, $tagContent, $tagOptions);
+            foreach ($this->tags as $tagName => $tags) {
+                if (is_array($this->tags[$tagName])) {
+                    foreach ($tags as $tagOptions) {
+                        $tagContent = '';
+                        if (isset($tagOptions['content'])) {
+                            $tagContent = $tagOptions['content'];
+                            unset($tagOptions['content']);
                         }
 
-                    } else {
-                        throw new InvalidConfigException("Invalid config for 'tags' property.");
+                        $data .= Html::tag($tagName, $tagContent, $tagOptions);
                     }
+
+                } else {
+                    throw new InvalidConfigException("Invalid config for 'tags' property.");
                 }
+            }
 
         }
 
@@ -81,10 +82,12 @@ class VideojsWidget extends \yii\base\Widget
     private function registerAssets()
     {
         $view = $this->getView();
-        VideojsAsset::register($view);
+
+        $asset = VideojsAsset::register($view);
+        $asset->multipleResolutions = $this->multipleResolutions;
 
         if (!empty($this->jsOptions)) {
-            $js = 'videojs("#' . $this->options['id'] . '").ready(' . Json::encode($this->jsOptions). ');';
+            $js = 'videojs("#' . $this->options['id'] . '").ready(' . Json::encode($this->jsOptions) . ');';
             $view->registerJs($js);
         }
     }
