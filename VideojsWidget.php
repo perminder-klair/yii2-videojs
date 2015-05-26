@@ -19,9 +19,9 @@ class VideojsWidget extends \yii\base\Widget
     public $options = [];
 
     /**
-     * @var array
+     * @var null
      */
-    public $jsOptions = [];
+    public $jsOptions = null;
 
     /**
      * @var array
@@ -46,12 +46,14 @@ class VideojsWidget extends \yii\base\Widget
     public function init()
     {
         parent::init();
+
         Yii::setAlias('@videojs', dirname(__FILE__));
-        $this->registerAssets();
 
         if (!isset($this->options['id'])) {
             $this->options['id'] = 'videojs-' . $this->getId();
         }
+
+        $this->registerAssets();
     }
 
     public function run()
@@ -95,8 +97,8 @@ class VideojsWidget extends \yii\base\Widget
         $asset = VideojsAsset::register($view);
         $asset->multipleResolutions = $this->multipleResolutions;
 
-        if (!empty($this->jsOptions)) {
-            $js = 'videojs("#' . $this->options['id'] . '").ready(' . Json::encode($this->jsOptions) . ');';
+        if (!is_null($this->jsOptions)) {
+            $js = 'videojs("#' . $this->options['id'] . '").ready(' . $this->jsOptions . ');';
             $view->registerJs($js);
         }
     }
